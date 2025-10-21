@@ -3,6 +3,7 @@ package com.example.projeto.controller;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<UserModel> buscarUsuarioPorId(@PathVariable Long id){
-        return userService.buscarPorId(id);
+    public ResponseEntity<UserModel> buscarUsuarioPorId(@PathVariable Long id){
+        //Entender esse return
+        return userService.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/users")
