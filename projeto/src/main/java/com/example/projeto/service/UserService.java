@@ -2,10 +2,12 @@ package com.example.projeto.service;
 
 import com.example.projeto.models.UserModel;
 import com.example.projeto.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +21,39 @@ public class UserService {
 //        this.userRepository = userRepository;
 //    }
 
+    //Select * From Users
     public List<UserModel> listarUsuarios(){
         return userRepository.findAll();
     }
 
+    //Select * From Users Where id Like = {id}
     public Optional<UserModel> buscarPorId(Long id){
         return userRepository.findById(id);
     }
+
+    //Insert into User (nome,email) values({nome},{email})
+    public UserModel inserirUsuario(UserModel user){
+        return userRepository.save(user);
+    }
+
+    //Delete from User where id Like = {id}
+    public Optional<UserModel> deletarUsuario(long id){
+        Optional<UserModel> user = userRepository.findById(id);
+        userRepository.deleteById(id);
+        return user;
+    }
+
+    //Update
+    public Optional<UserModel> atualizarEmail(Long id, String email) {
+        //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id" + id + " nao encontrado"));
+        user.setEmail(email);
+
+
+        //Vai salvar um novo ou dar Update?
+        userRepository.save(user);
+
+        return userRepository.findById(id);
+    }
+
 }
