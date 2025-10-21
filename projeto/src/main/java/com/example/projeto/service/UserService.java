@@ -35,10 +35,8 @@ public class UserService {
     }
 
     //Delete from User where id Like = {id}
-    public Optional<UserModel> deletarUsuario(long id){
-        Optional<UserModel> user = userRepository.findById(id);
+    public void deletarUsuario(long id){
         userRepository.deleteById(id);
-        return user;
     }
 
     //Update
