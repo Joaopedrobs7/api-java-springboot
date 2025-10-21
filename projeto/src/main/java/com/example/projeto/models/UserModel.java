@@ -1,22 +1,25 @@
-package Models;
+package com.example.projeto.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Primary;
+import lombok.*;
 
+//Nao preciso usar @Getter e Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
+//Mapear como entidade do banco
 @Entity
 @Table (name = "User")
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 100)
     private String  name;
+
+    @Column(nullable = false, length = 100)
     private String email;
 
 }
