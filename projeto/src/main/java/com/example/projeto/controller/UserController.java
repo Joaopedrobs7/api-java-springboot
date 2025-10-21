@@ -3,10 +3,7 @@ package com.example.projeto.controller;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +27,25 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<UserModel> listarUsuario(@PathVariable Long id){
+    public Optional<UserModel> buscarUsuarioPorId(@PathVariable Long id){
         return userService.buscarPorId(id);
+    }
+
+    @PostMapping("/users")
+    public UserModel adicionarUsuario(@RequestBody UserModel user){
+        return userService.inserirUsuario(user);
+    }
+
+    @PutMapping("/users")
+    public Optional<UserModel> atualizarUsuario(@RequestBody UserModel user){
+        return userService.atualizarEmail(user.getId(), user.getEmail());
+    }
+
+    @DeleteMapping("/users/{id}")
+    public String deletarUsuario(@PathVariable Long id){
+        if (userService.deletarUsuario(id).isEmpty()){
+            return "Usuario Nao Encontrado";
+        }
+        return "Usuario Deletado com Sucesso";
     }
 }
