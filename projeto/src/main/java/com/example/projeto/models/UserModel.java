@@ -19,7 +19,7 @@ public class UserModel {
     @Column(nullable = false, length = 100)
     private String  name;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String email;
 
 }
