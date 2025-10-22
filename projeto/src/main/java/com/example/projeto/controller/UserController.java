@@ -1,6 +1,7 @@
 package com.example.projeto.controller;
 
 import com.example.projeto.dto.EmailUpdateDto;
+import com.example.projeto.dto.UserModelDto;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserModel adicionarUsuario(@RequestBody UserModel user){
+    public UserModel adicionarUsuario(@RequestBody UserModelDto user){
         return userService.inserirUsuario(user);
     }
 
