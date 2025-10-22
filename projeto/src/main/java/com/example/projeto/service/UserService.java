@@ -40,16 +40,17 @@ public class UserService {
     }
 
     //Update
-    public Optional<UserModel> atualizarEmail(Long id, String email) {
+    public UserModel atualizarEmail(Long id, String email) {
         //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id" + id + " nao encontrado"));
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id " + id + " nao encontrado"));
         user.setEmail(email);
 
 
-        //Vai salvar um novo ou dar Update?
-        userRepository.save(user);
+//        //Vai salvar um novo ou dar Update?
+//        userRepository.save(user);
 
-        return userRepository.findById(id);
+
+        return userRepository.save(user);
     }
 
 }
