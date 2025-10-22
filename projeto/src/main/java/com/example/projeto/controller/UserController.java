@@ -1,5 +1,6 @@
 package com.example.projeto.controller;
 
+import com.example.projeto.dto.EmailUpdateDto;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,9 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserModel> buscarUsuarioPorId(@PathVariable Long id){
         //Entender esse return
-        return userService.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return userService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
@@ -38,10 +41,12 @@ public class UserController {
         return userService.inserirUsuario(user);
     }
 
-    @PutMapping()
-    public Optional<UserModel> atualizarUsuario(@RequestBody UserModel user){
-        return userService.atualizarEmail(user.getId(), user.getEmail());
-    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserModel> atualizarUsuario(@PathVariable Long id, @RequestBody EmailUpdateDto emailDto){
+        UserModel updatedUser = userService.atualizarEmail(id,emailDto.getEmail());
+        return ResponseEntity.ok(updatedUser);
+
+     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable Long id){
