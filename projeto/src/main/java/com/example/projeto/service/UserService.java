@@ -1,10 +1,12 @@
 package com.example.projeto.service;
 
+import com.example.projeto.dto.UserModelDto;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +32,12 @@ public class UserService {
     }
 
     //Insert into User (nome,email) values({nome},{email})
-    public UserModel inserirUsuario(UserModel user){
-        return userRepository.save(user);
+    public UserModel inserirUsuario(UserModelDto userdto){
+        //Mapeando o Dto para a entidade UserModel
+        UserModel usermodel = new UserModel();
+        usermodel.setEmail(userdto.getEmail());
+        usermodel.setName(userdto.getName());
+        return userRepository.save(usermodel);
     }
 
     //Delete from User where id Like = {id}
