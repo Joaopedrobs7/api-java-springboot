@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         // Boas práticas: use uma chave genérica para erros de recurso
         errors.put("resource", ex.getMessage());
+        return errors;
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNoSuchElementException(NoSuchElementException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("resource", "Usuario não encontrado");
         return errors;
     }
 
