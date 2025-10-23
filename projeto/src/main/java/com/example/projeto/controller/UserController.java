@@ -4,6 +4,7 @@ import com.example.projeto.dto.EmailUpdateDto;
 import com.example.projeto.dto.UserModelDto;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class UserController {
 
 
 
+    //RequiredArgsConstructor faz a instancia desse cara
     private final UserService userService;
 //    public UserController(UserService userService) {
 //        this.userService = userService;
@@ -37,12 +39,12 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserModel adicionarUsuario(@RequestBody UserModelDto user){
+    public UserModel adicionarUsuario(@RequestBody @Valid UserModelDto user){
         return userService.inserirUsuario(user);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserModel> atualizarUsuario(@PathVariable Long id, @RequestBody EmailUpdateDto emailDto){
+    public ResponseEntity<UserModel> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid EmailUpdateDto emailDto){
         UserModel updatedUser = userService.atualizarEmail(id,emailDto.getEmail());
         return ResponseEntity.ok(updatedUser);
 
