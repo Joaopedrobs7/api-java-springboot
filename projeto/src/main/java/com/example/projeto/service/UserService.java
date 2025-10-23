@@ -27,8 +27,19 @@ public class UserService {
     }
 
     //Select * From Users Where id Like = {id}
-    public Optional<UserModel> buscarPorId(Long id){
-        return userRepository.findById(id);
+    public Optional<UserModelDto> buscarPorId(Long id){
+
+        //Fazendo o get da entidade
+        Optional<UserModel> userModel = userRepository.findById(id);
+
+        //Instanciando novo dto
+        UserModelDto userModelDto = new UserModelDto();
+
+        //mapeando do usermodel para o dto
+        userModelDto.setName(userModel.get().getName());
+        userModelDto.setEmail(userModel.get().getEmail());
+
+        return Optional.of(userModelDto);
     }
 
     //Insert into User (nome,email) values({nome},{email})
