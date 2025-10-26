@@ -51,7 +51,7 @@ public class UserService {
     //Insert into User (nome,email) values({nome},{email})
     public UserModelDto inserirUsuario(UserModelDto userdto){
         //Mapeando o Dto para a entidade UserModel
-        UserModel userModel = userdto.ToEntity(userdto);
+        UserModel userModel = userdto.toEntity(userdto);
 
         userRepository.save(userModel);
         return userdto;
