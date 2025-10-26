@@ -6,7 +6,6 @@ import com.example.projeto.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +21,19 @@ public class UserService {
 //    }
 
     //Select * From Users
-    public List<UserModel> listarUsuarios(){
-        return userRepository.findAll();
+    public List<UserModelDto> listarUsuarios(){
+         List <UserModelDto> userModelDtos =  userRepository.findAll().stream().map(userModel -> new UserModelDto().toDto(userModel)).toList();
+
+
+//         List <UserModel> userModels = userRepository.findAll();
+//         List <UserModelDto> userModelDtoList = List.of();
+//         for(int i = 0; i<userModels.size(); i++){
+//             UserModel u = userModels.get(i);
+//             UserModelDto uDto = new UserModelDto(u.getName(),u.getEmail());
+//             userModelDtoList.add(uDto);
+//         }
+    
+        return userModelDtos;
     }
 
     //Select * From Users Where id Like = {id}
@@ -33,22 +43,18 @@ public class UserService {
         Optional<UserModel> userModel = userRepository.findById(id);
 
         //Instanciando novo dto
-        UserModelDto userModelDto = new UserModelDto();
-
-        //mapeando do usermodel para o dto
-        userModelDto.setName(userModel.get().getName());
-        userModelDto.setEmail(userModel.get().getEmail());
+        UserModelDto userModelDto = new UserModelDto().toDto(userModel.get());
 
         return Optional.of(userModelDto);
     }
 
     //Insert into User (nome,email) values({nome},{email})
-    public UserModel inserirUsuario(UserModelDto userdto){
+    public UserModelDto inserirUsuario(UserModelDto userdto){
         //Mapeando o Dto para a entidade UserModel
-        UserModel usermodel = new UserModel();
-        usermodel.setEmail(userdto.getEmail());
-        usermodel.setName(userdto.getName());
-        return userRepository.save(usermodel);
+        UserModel userModel = userdto.ToEntity(userdto);
+
+        userRepository.save(userModel);
+        return userdto;
     }
 
     //Delete from User where id Like = {id}
