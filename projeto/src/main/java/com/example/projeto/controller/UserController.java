@@ -3,13 +3,21 @@ package com.example.projeto.controller;
 import com.example.projeto.dto.EmailUpdateDto;
 import com.example.projeto.dto.UserModelDto;
 import com.example.projeto.models.UserModel;
+import com.example.projeto.records.ErrorResponse;
 import com.example.projeto.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,22 +33,41 @@ public class UserController {
 //        this.userService = userService;
 //    }
 
+    @Operation(summary = "Lista todos os usuários")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
     @GetMapping()
-    public List<UserModel> listarUsuarios(){
-        return userService.listarUsuarios();
+
+    public ResponseEntity<List<UserModelDto>> listarUsuarios(){
+        return ResponseEntity.ok(userService.listarUsuarios());
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserModelDto> buscarUsuarioPorId(@PathVariable Long id){
         //Entender esse return
+
+        Optional<UserModelDto> userDto = userService.buscarPorId(id);
+//        if (userDto.isPresent()){
+//            return ResponseEntity.ok(userDto.get());
+//        }
+//        return ResponseEntity.notFound().build();
+
         return userService.buscarPorId(id)
-                .map(ResponseEntity::ok)
+                .map(userModelDto -> ResponseEntity.ok(userModelDto) )
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Inserir Usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario Inserido Com Sucesso"),
+            @ApiResponse(responseCode = "400", description = "Usuario Invalido", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+
+    })
     @PostMapping()
-    public UserModel adicionarUsuario(@RequestBody @Valid UserModelDto user){
-        return userService.inserirUsuario(user);
+    public ResponseEntity<UserModelDto> adicionarUsuario(@RequestBody @Valid UserModelDto user){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.inserirUsuario(user));
     }
 
     @PatchMapping("/{id}")
