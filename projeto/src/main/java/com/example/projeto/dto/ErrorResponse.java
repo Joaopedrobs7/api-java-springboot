@@ -1,4 +1,4 @@
-package com.example.projeto.records;
+package com.example.projeto.dto;
 
 public record ErrorResponse(
         String timestamp,
