@@ -1,9 +1,9 @@
 package com.example.projeto.controller;
 
-import com.example.projeto.dto.EmailUpdateDto;
-import com.example.projeto.dto.UserModelDto;
-import com.example.projeto.models.UserModel;
-import com.example.projeto.records.ErrorResponse;
+import com.example.projeto.dto.EmailUpdateRequest;
+import com.example.projeto.dto.UserModelRequest;
+import com.example.projeto.dto.UserModelResponse;
+import com.example.projeto.dto.ErrorResponse;
 import com.example.projeto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,16 +38,16 @@ public class UserController {
     })
     @GetMapping()
 
-    public ResponseEntity<List<UserModelDto>> listarUsuarios(){
+    public ResponseEntity<List<UserModelResponse>> listarUsuarios(){
         return ResponseEntity.ok(userService.listarUsuarios());
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModelDto> buscarUsuarioPorId(@PathVariable Long id){
+    public ResponseEntity<UserModelResponse> buscarUsuarioPorId(@PathVariable Long id){
         //Entender esse return
 
-        Optional<UserModelDto> userDto = userService.buscarPorId(id);
+//        Optional<UserModelResponse> userDto = userService.buscarPorId(id);
 //        if (userDto.isPresent()){
 //            return ResponseEntity.ok(userDto.get());
 //        }
@@ -66,13 +65,13 @@ public class UserController {
 
     })
     @PostMapping()
-    public ResponseEntity<UserModelDto> adicionarUsuario(@RequestBody @Valid UserModelDto user){
+    public ResponseEntity<UserModelResponse> adicionarUsuario(@RequestBody @Valid UserModelRequest user){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.inserirUsuario(user));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserModel> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid EmailUpdateDto emailDto){
-        UserModel updatedUser = userService.atualizarEmail(id,emailDto.getEmail());
+    public ResponseEntity<UserModelResponse> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid EmailUpdateRequest emailDto){
+        UserModelResponse updatedUser = userService.atualizarEmail(id, emailDto.email());
         return ResponseEntity.ok(updatedUser);
 
      }

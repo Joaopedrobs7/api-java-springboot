@@ -1,12 +1,14 @@
 package com.example.projeto.service;
 
-import com.example.projeto.dto.UserModelDto;
+import com.example.projeto.dto.UserModelRequest;
+import com.example.projeto.dto.UserModelResponse;
+import com.example.projeto.mapper.UserMapper;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,13 +18,15 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper mapper;
 //    public UserService(UserRepository userRepository) {
 //        this.userRepository = userRepository;
 //    }
 
     //Select * From Users
-    public List<UserModelDto> listarUsuarios(){
-         List <UserModelDto> userModelDtos =  userRepository.findAll().stream().map(userModel -> new UserModelDto().toDto(userModel)).toList();
+    public List<UserModelResponse> listarUsuarios(){
+         List <UserModel> userModels =  userRepository.findAll();
+         List <UserModelResponse> userModelResponses = mapper.toDto(userModels);
 
 
 //         List <UserModel> userModels = userRepository.findAll();
@@ -33,28 +37,29 @@ public class UserService {
 //             userModelDtoList.add(uDto);
 //         }
     
-        return userModelDtos;
+        return userModelResponses;
     }
 
     //Select * From Users Where id Like = {id}
-    public Optional<UserModelDto> buscarPorId(Long id){
+    public Optional<UserModelResponse> buscarPorId(Long id){
 
         //Fazendo o get da entidade
         Optional<UserModel> userModel = userRepository.findById(id);
 
         //Instanciando novo dto
-        UserModelDto userModelDto = new UserModelDto().toDto(userModel.get());
+        UserModelResponse userModelResponse = mapper.toDto(userModel.get());
 
-        return Optional.of(userModelDto);
+        return Optional.of(userModelResponse);
     }
 
     //Insert into User (nome,email) values({nome},{email})
-    public UserModelDto inserirUsuario(UserModelDto userdto){
+    public UserModelResponse inserirUsuario(UserModelRequest userModelRequest){
         //Mapeando o Dto para a entidade UserModel
-        UserModel userModel = userdto.toEntity(userdto);
-
+        UserModel userModel = mapper.toEntity(userModelRequest);
+        UserModelResponse userModelResponse = mapper.toDto(userModel);
         userRepository.save(userModel);
-        return userdto;
+
+        return userModelResponse;
     }
 
     //Delete from User where id Like = {id}
@@ -63,17 +68,16 @@ public class UserService {
     }
 
     //Update
-    public UserModel atualizarEmail(Long id, String email) {
+    public UserModelResponse atualizarEmail(Long id, String email) {
         //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
         UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id " + id + " nao encontrado"));
         user.setEmail(email);
 
+        //Salva no banco
+        userRepository.save(user);
 
-//        //Vai salvar um novo ou dar Update?
-//        userRepository.save(user);
 
-
-        return userRepository.save(user);
+        return mapper.toDto(user);
     }
 
 }
