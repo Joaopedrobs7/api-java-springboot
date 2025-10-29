@@ -68,10 +68,12 @@ public class UserService {
     }
 
     //Update
-    public UserModelResponse atualizarEmail(Long id, String email) {
+    public UserModelResponse atualizarEmail(Long id, UserModelRequest userModelRequest) {
         //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
         UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id " + id + " nao encontrado"));
-        user.setEmail(email);
+
+        //mapear para entity
+        mapper.updateUserFromDto(userModelRequest,user);
 
         //Salva no banco
         userRepository.save(user);

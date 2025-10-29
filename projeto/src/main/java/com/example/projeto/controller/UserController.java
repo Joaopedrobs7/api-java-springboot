@@ -70,8 +70,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserModelResponse> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid EmailUpdateRequest emailDto){
-        UserModelResponse updatedUser = userService.atualizarEmail(id, emailDto.email());
+    public ResponseEntity<UserModelResponse> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid UserModelRequest userModelRequest){
+        UserModelResponse updatedUser = userService.atualizarEmail(id,userModelRequest);
         return ResponseEntity.ok(updatedUser);
 
      }
