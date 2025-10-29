@@ -22,4 +22,7 @@ public class UserModel {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @Column(nullable = false,length = 20,unique = true)
+    private String phone;
+
 }
