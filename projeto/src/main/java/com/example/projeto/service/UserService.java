@@ -2,6 +2,7 @@ package com.example.projeto.service;
 
 import com.example.projeto.dto.UserModelRequest;
 import com.example.projeto.dto.UserModelResponse;
+import com.example.projeto.exceptions.UserNotFoundException;
 import com.example.projeto.mapper.UserMapper;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.repository.UserRepository;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,29 +41,30 @@ public class UserService {
     }
 
     //Select * From Users Where id Like = {id}
-    public Optional<UserModelResponse> buscarPorId(Long id){
+    public UserModelResponse buscarPorId(Long id){
 
-        //Fazendo o get da entidade
-        Optional<UserModel> userModel = userRepository.findById(id);
-
-        //Instanciando novo dto
-        UserModelResponse userModelResponse = mapper.toDto(userModel.get());
-
-        return Optional.of(userModelResponse);
+        return userRepository.findById(id)
+                .map(mapper::toDto)
+                .orElseThrow(() -> new UserNotFoundException("Usuario Não Encontrado -SERVICE-"));
     }
 
     //Insert into User (nome,email) values({nome},{email})
     public UserModelResponse inserirUsuario(UserModelRequest userModelRequest){
         //Mapeando o Dto para a entidade UserModel
         UserModel userModel = mapper.toEntity(userModelRequest);
-        UserModelResponse userModelResponse = mapper.toDto(userModel);
-        userRepository.save(userModel);
+        UserModel savedUser = userRepository.save(userModel);
 
-        return userModelResponse;
+        return mapper.toDto(savedUser);
+
     }
 
     //Delete from User where id Like = {id}
     public void deletarUsuario(long id){
+
+        if(!userRepository.existsById(id)){
+            throw new UserNotFoundException("Usuario Não Encontrado");
+        }
+
         userRepository.deleteById(id);
     }
 

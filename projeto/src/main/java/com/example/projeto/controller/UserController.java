@@ -1,9 +1,8 @@
 package com.example.projeto.controller;
 
-import com.example.projeto.dto.EmailUpdateRequest;
+import com.example.projeto.dto.ErrorResponse;
 import com.example.projeto.dto.UserModelRequest;
 import com.example.projeto.dto.UserModelResponse;
-import com.example.projeto.dto.ErrorResponse;
 import com.example.projeto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,18 +43,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModelResponse> buscarUsuarioPorId(@PathVariable Long id){
-        //Entender esse return
-
-//        Optional<UserModelResponse> userDto = userService.buscarPorId(id);
-//        if (userDto.isPresent()){
-//            return ResponseEntity.ok(userDto.get());
-//        }
-//        return ResponseEntity.notFound().build();
-
-        return userService.buscarPorId(id)
-                .map(userModelDto -> ResponseEntity.ok(userModelDto) )
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> buscarUsuarioPorId(@PathVariable Long id){
+        UserModelResponse userModelResponse =  userService.buscarPorId(id);
+        return ResponseEntity.ok(userModelResponse);
     }
 
     @Operation(summary = "Inserir Usuario")
