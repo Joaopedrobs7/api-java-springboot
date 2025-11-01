@@ -5,6 +5,7 @@ import com.example.projeto.dto.UserModelResponse;
 import com.example.projeto.dto.UserUpdateRequest;
 import com.example.projeto.exceptions.UserNotFoundException;
 import com.example.projeto.mapper.UserMapper;
+import com.example.projeto.mapper.UserUpdateMapper;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
+    private final UserUpdateMapper updateMapper;
 //    public UserService(UserRepository userRepository) {
 //        this.userRepository = userRepository;
 //    }
@@ -73,23 +75,8 @@ public class UserService {
         //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
         UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id " + id + " nao encontrado"));
 
-        //mapear para Entity
-        if (userUpdateRequest.name() != null){
-            user.setName(userUpdateRequest.name());
-        }
-
-        if(userUpdateRequest.email() != null){
-            user.setEmail(userUpdateRequest.email());
-        }
-
-        if(userUpdateRequest.phone() != null){
-            user.setPhone(userUpdateRequest.phone());
-        }
-
-
-        //mapear para entity
-        //mapper.updateUserFromDto(userModelRequest,user);
-
+        //Alterar na entity
+        updateMapper.updateFromDto(userUpdateRequest,user);
         //Salva no banco
         userRepository.save(user);
 
