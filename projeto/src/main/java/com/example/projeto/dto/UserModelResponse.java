@@ -17,6 +17,7 @@ public record UserModelResponse(
 
         @NotBlank
         @NotNull
+        @Size(min = 7, max = 15)
         String phone
         ) {
 }
