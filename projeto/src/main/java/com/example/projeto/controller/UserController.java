@@ -3,6 +3,7 @@ package com.example.projeto.controller;
 import com.example.projeto.dto.ErrorResponse;
 import com.example.projeto.dto.UserModelRequest;
 import com.example.projeto.dto.UserModelResponse;
+import com.example.projeto.dto.UserUpdateRequest;
 import com.example.projeto.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,12 +57,15 @@ public class UserController {
     })
     @PostMapping()
     public ResponseEntity<UserModelResponse> adicionarUsuario(@RequestBody @Valid UserModelRequest user){
+        //Caso n passe no validation, o proprio validation lanca a exception /MethodArgumentNotValidException/
+        //no restController advice, fazemos o binding de cada campo onde faltou validacao.
+
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.inserirUsuario(user));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserModelResponse> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid UserModelRequest userModelRequest){
-        UserModelResponse updatedUser = userService.atualizarEmail(id,userModelRequest);
+    public ResponseEntity<UserModelResponse> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid UserUpdateRequest userUpdateRequest){
+        UserModelResponse updatedUser = userService.atualizarEmail(id,userUpdateRequest);
         return ResponseEntity.ok(updatedUser);
 
      }

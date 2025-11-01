@@ -2,6 +2,7 @@ package com.example.projeto.service;
 
 import com.example.projeto.dto.UserModelRequest;
 import com.example.projeto.dto.UserModelResponse;
+import com.example.projeto.dto.UserUpdateRequest;
 import com.example.projeto.exceptions.UserNotFoundException;
 import com.example.projeto.mapper.UserMapper;
 import com.example.projeto.models.UserModel;
@@ -14,7 +15,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserService {
 
     private final UserRepository userRepository;
@@ -69,12 +69,26 @@ public class UserService {
     }
 
     //Update
-    public UserModelResponse atualizarEmail(Long id, UserModelRequest userModelRequest) {
+    public UserModelResponse atualizarEmail(Long id, UserUpdateRequest userUpdateRequest) {
         //Procura o usuario, se acha salva com as novas informacoes no 'user', e da um save encima desse user
         UserModel user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuario Com id " + id + " nao encontrado"));
 
+        //mapear para Entity
+        if (userUpdateRequest.name() != null){
+            user.setName(userUpdateRequest.name());
+        }
+
+        if(userUpdateRequest.email() != null){
+            user.setEmail(userUpdateRequest.email());
+        }
+
+        if(userUpdateRequest.phone() != null){
+            user.setPhone(userUpdateRequest.phone());
+        }
+
+
         //mapear para entity
-        mapper.updateUserFromDto(userModelRequest,user);
+        //mapper.updateUserFromDto(userModelRequest,user);
 
         //Salva no banco
         userRepository.save(user);
